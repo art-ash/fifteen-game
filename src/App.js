@@ -23,6 +23,7 @@ class App extends Component {
     this.setBlankCoords = this.setBlankCoords.bind(this);
     this.reorder = this.reorder.bind(this);
     this.checkIfWin = this.checkIfWin.bind(this);
+    this.handlePlayClick = this.handlePlayClick.bind(this);
   }
 
   componentDidMount() {
@@ -71,6 +72,11 @@ class App extends Component {
     }
   }
 
+  handlePlayClick() {
+    const { cells } = this.state;
+    this.setState({ cells: this.shuffle(cells), isWin: null });
+  }
+
   render() {
     const { cells, blankCoords, boardCoords, isWin } = this.state;
 
@@ -78,6 +84,9 @@ class App extends Component {
       return (
         <div className={styles.app}>
           <h1>You Win!</h1>
+          <button className={styles.playButton} onClick={this.handlePlayClick}>
+            Play again!
+          </button>
         </div>
       );
     }
