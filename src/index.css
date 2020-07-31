@@ -5,6 +5,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color:#333;
+  color: #eee;
 }
 
 code {
@@ -16,4 +18,5 @@ h1 {
   font-size: 2.5rem;
   line-height: 1.2;
   font-weight: 800;
+  color: #fff;
 }

@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import styles from "./Cell.module.css";
 
 const CELL_SIZE = 100;
+const DRAGGING_COLORS = {
+  zIndex: 10,
+  backgroundColor: "#000",
+};
 
 class Cell extends Component {
   constructor(props) {
@@ -54,7 +58,7 @@ class Cell extends Component {
       draggingStyle: {
         top: e.pageY - boardCoords.y - CELL_SIZE / 2,
         left: e.pageX - boardCoords.x - CELL_SIZE / 2,
-        zIndex: 10,
+        ...DRAGGING_COLORS,
       },
     });
   }
@@ -66,7 +70,7 @@ class Cell extends Component {
       draggingStyle: {
         top: e.pageY - boardCoords.y - CELL_SIZE / 2,
         left: e.pageX - boardCoords.x - CELL_SIZE / 2,
-        zIndex: 10,
+        ...DRAGGING_COLORS,
       },
     });
   }
