@@ -1,0 +1,16 @@
+.app {
+  margin: 0 auto;
+  width: 402px;
+  text-align: center;
+}
+.board {
+  width: 400px;
+  height: 400px;
+  border: 1px solid black;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 32px;
+  position: relative;
+}
+
+
