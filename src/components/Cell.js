@@ -14,44 +14,22 @@ class Cell extends Component {
     this.state = {
       draggingStyle: null,
       isCellClicked: null,
+      isCellMoved: null,
       isCellBlank: false,
-      isCellDraggable: false,
     };
 
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.handleMouseMove = this.handleMouseMove.bind(this);
     this.handleMouseUp = this.handleMouseUp.bind(this);
-    this.isCellDraggable = this.isCellDraggable.bind(this);
   }
 
   componentDidMount() {
     const { value } = this.props;
     const isCellBlank = value === 0;
-
     if (isCellBlank) {
       const squareRef = this.squareRef.current;
       this.props.setBlankCellCoordinates(squareRef);
       this.setState({ isCellBlank });
-    }
-
-    if (this.isCellDraggable()) {
-      this.setState({ isCellDraggable: true });
-    }
-  }
-
-  isCellDraggable() {
-    const { cells, index } = this.props;
-    let blankIndex = cells.findIndex(item => item === 0);
-    blankIndex = blankIndex + 5;
-    const squareIndex = index + 5;
-
-    if (
-      squareIndex === blankIndex + 1 ||
-      squareIndex === blankIndex - 1 ||
-      squareIndex === blankIndex + 4 ||
-      squareIndex === blankIndex - 4
-    ) {
-      return true;
     }
   }
 
@@ -72,6 +50,7 @@ class Cell extends Component {
     const { boardCoordinates } = this.props;
 
     this.setState({
+      isCellMoved: true,
       draggingStyle: {
         top: e.pageY - boardCoordinates.y - CELL_SIZE / 2,
         left: e.pageX - boardCoordinates.x - CELL_SIZE / 2,
@@ -89,19 +68,24 @@ class Cell extends Component {
       e.clientY > blankCellCoordinates.y + boardCoordinates.y &&
       e.clientY < blankCellCoordinates.y + boardCoordinates.y + CELL_SIZE * 2
     ) {
-      this.setState({
-        isCellClicked: null,
-        draggingStyle: null,
-      });
       this.props.reorderCells(index);
       this.props.checkForWin();
+      this.setState({
+        isCellClicked: false,
+        isCellMoved: false,
+        draggingStyle: null,
+      });
     }
   }
 
   render() {
-    const { value } = this.props;
-    const { draggingStyle, isCellClicked, isCellBlank } = this.state;
-    const isCellDraggable = this.state;
+    const { value, isCellDraggable } = this.props;
+    const {
+      draggingStyle,
+      isCellClicked,
+      isCellMoved,
+      isCellBlank,
+    } = this.state;
 
     if (isCellBlank) {
       return <div className={styles.cell} />;
@@ -112,8 +96,10 @@ class Cell extends Component {
         style={draggingStyle}
         className={styles.cell}
         onMouseDown={isCellDraggable ? this.handleMouseDown : null}
-        onMouseMove={isCellClicked ? this.handleMouseMove : null}
-        onMouseUp={isCellClicked ? this.handleMouseUp : null}
+        onMouseMove={
+          isCellDraggable && isCellClicked ? this.handleMouseMove : null
+        }
+        onMouseUp={isCellDraggable && isCellMoved ? this.handleMouseUp : null}
         ref={this.squareRef}
       >
         {value}
