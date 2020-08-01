@@ -5,7 +5,6 @@ import styles from "./Board.module.css";
 class Board extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
     this.boardRef = React.createRef();
   }
 
