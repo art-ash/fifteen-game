@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { setBlankCellCoordinates, reorderCells, checkForWin } from "../redux/actions";
 import styles from "./Cell.module.css";
 
 const CELL_SIZE = 100;
-const DRAGGING_COLORS = {
+const DRAGGING_STYLE = {
   zIndex: 10,
   backgroundColor: "#000",
 };
@@ -17,7 +15,7 @@ class Cell extends Component {
       draggingStyle: null,
       isCellClicked: null,
       isCellBlank: false,
-      isCellDraggable: false
+      isCellDraggable: false,
     };
 
     this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -65,7 +63,7 @@ class Cell extends Component {
       draggingStyle: {
         top: e.pageY - boardCoordinates.y - CELL_SIZE / 2,
         left: e.pageX - boardCoordinates.x - CELL_SIZE / 2,
-        ...DRAGGING_COLORS,
+        ...DRAGGING_STYLE,
       },
     });
   }
@@ -77,7 +75,7 @@ class Cell extends Component {
       draggingStyle: {
         top: e.pageY - boardCoordinates.y - CELL_SIZE / 2,
         left: e.pageX - boardCoordinates.x - CELL_SIZE / 2,
-        ...DRAGGING_COLORS,
+        ...DRAGGING_STYLE,
       },
     });
   }
@@ -124,14 +122,4 @@ class Cell extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  const {cells, boardCoordinates, blankCellCoordinates} = state.game;
-
-  return {
-    cells,
-    boardCoordinates,
-    blankCellCoordinates
-  }
-}
-
-export default connect(mapStateToProps, { setBlankCellCoordinates, reorderCells, checkForWin })(Cell);
+export default Cell;

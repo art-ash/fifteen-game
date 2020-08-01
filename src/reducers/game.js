@@ -4,7 +4,7 @@ import {
   SET_BLANK_CELL_COORDINATES,
   REORDER_CELLS,
   CHECK_FOR_WIN,
-} from "../actionTypes";
+} from "../actions/actionTypes";
 
 const initialState = {
   cells: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0],
@@ -82,9 +82,9 @@ export default function (state = initialState, action) {
       ) {
         return {
           ...state,
-          isWin: true
+          isWin: true,
         };
-      } 
+      }
 
       return {
         ...state,

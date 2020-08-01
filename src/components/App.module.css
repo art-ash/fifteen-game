@@ -4,15 +4,15 @@
   text-align: center;
 }
 
-.playButton {
+.button {
   background-color: black;
   border: none;
   color: white;
   padding: 0.5rem 1rem;
-  border-radius: 1rem;
+  border-radius: 0.2rem;
   cursor: pointer;
 }
 
-.playButton:hover{
+.button:hover{
   background-color: #151515;
 }
