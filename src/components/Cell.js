@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { setBlankCellCoordinates, reorderCells, checkForWin } from "../redux/actions";
 import styles from "./Cell.module.css";
 
 const CELL_SIZE = 100;
@@ -15,6 +17,7 @@ class Cell extends Component {
       draggingStyle: null,
       isCellClicked: null,
       isCellBlank: false,
+      isCellDraggable: false
     };
 
     this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -29,8 +32,12 @@ class Cell extends Component {
 
     if (isCellBlank) {
       const squareRef = this.squareRef.current;
-      this.props.setBlankCoords(squareRef);
+      this.props.setBlankCellCoordinates(squareRef);
       this.setState({ isCellBlank });
+    }
+
+    if (this.isCellDraggable()) {
+      this.setState({ isCellDraggable: true });
     }
   }
 
@@ -51,51 +58,52 @@ class Cell extends Component {
   }
 
   handleMouseDown(e) {
-    const { boardCoords } = this.props;
+    const { boardCoordinates } = this.props;
 
     this.setState({
       isCellClicked: true,
       draggingStyle: {
-        top: e.pageY - boardCoords.y - CELL_SIZE / 2,
-        left: e.pageX - boardCoords.x - CELL_SIZE / 2,
+        top: e.pageY - boardCoordinates.y - CELL_SIZE / 2,
+        left: e.pageX - boardCoordinates.x - CELL_SIZE / 2,
         ...DRAGGING_COLORS,
       },
     });
   }
 
   handleMouseMove(e) {
-    const { boardCoords } = this.props;
+    const { boardCoordinates } = this.props;
 
     this.setState({
       draggingStyle: {
-        top: e.pageY - boardCoords.y - CELL_SIZE / 2,
-        left: e.pageX - boardCoords.x - CELL_SIZE / 2,
+        top: e.pageY - boardCoordinates.y - CELL_SIZE / 2,
+        left: e.pageX - boardCoordinates.x - CELL_SIZE / 2,
         ...DRAGGING_COLORS,
       },
     });
   }
 
   handleMouseUp(e) {
-    const { blankCoords, boardCoords, index } = this.props;
+    const { blankCellCoordinates, boardCoordinates, index } = this.props;
 
     if (
-      e.clientX > blankCoords.x + boardCoords.x &&
-      e.clientX < blankCoords.x + boardCoords.x + CELL_SIZE * 2 &&
-      e.clientY > blankCoords.y + boardCoords.y &&
-      e.clientY < blankCoords.y + boardCoords.y + CELL_SIZE * 2
+      e.clientX > blankCellCoordinates.x + boardCoordinates.x &&
+      e.clientX < blankCellCoordinates.x + boardCoordinates.x + CELL_SIZE * 2 &&
+      e.clientY > blankCellCoordinates.y + boardCoordinates.y &&
+      e.clientY < blankCellCoordinates.y + boardCoordinates.y + CELL_SIZE * 2
     ) {
       this.setState({
         isCellClicked: null,
         draggingStyle: null,
       });
-      this.props.reorder(index);
+      this.props.reorderCells(index);
+      this.props.checkForWin();
     }
   }
 
   render() {
     const { value } = this.props;
     const { draggingStyle, isCellClicked, isCellBlank } = this.state;
-    const isCellDraggable = this.isCellDraggable();
+    const isCellDraggable = this.state;
 
     if (isCellBlank) {
       return <div className={styles.cell} />;
@@ -116,4 +124,14 @@ class Cell extends Component {
   }
 }
 
-export default Cell;
+const mapStateToProps = state => {
+  const {cells, boardCoordinates, blankCellCoordinates} = state.game;
+
+  return {
+    cells,
+    boardCoordinates,
+    blankCellCoordinates
+  }
+}
+
+export default connect(mapStateToProps, { setBlankCellCoordinates, reorderCells, checkForWin })(Cell);
