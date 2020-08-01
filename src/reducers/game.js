@@ -4,6 +4,7 @@ import {
   SET_BLANK_CELL_COORDINATES,
   REORDER_CELLS,
   CHECK_FOR_WIN,
+  INCREMENT_MOVES,
 } from "../actions/actionTypes";
 
 const initialState = {
@@ -17,6 +18,7 @@ const initialState = {
     y: null,
   },
   isWin: null,
+  moves: 0,
 };
 
 export default function (state = initialState, action) {
@@ -25,11 +27,12 @@ export default function (state = initialState, action) {
       const { cells } = state;
       cells.sort(() => Math.random() - 0.5);
       const newCells = cells.slice();
-
+      
       return {
         ...state,
         cells: newCells,
         isWin: false,
+        moves: 0
       };
     }
 
@@ -88,6 +91,16 @@ export default function (state = initialState, action) {
 
       return {
         ...state,
+      };
+    }
+
+    case INCREMENT_MOVES: {
+      let { moves } = state;
+      moves++
+      
+      return {
+        ...state,
+        moves
       };
     }
 

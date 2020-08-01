@@ -1,15 +1,25 @@
 import { connect } from "react-redux";
-import { setBlankCellCoordinates, reorderCells, checkForWin } from "../actions/actions";
+import {
+  setBlankCellCoordinates,
+  reorderCells,
+  checkForWin,
+  incrementMoves,
+} from "../actions/actions";
 import Cell from "../components/Cell";
 
 const mapStateToProps = state => {
-  const {cells, boardCoordinates, blankCellCoordinates} = state.game;
+  const { cells, boardCoordinates, blankCellCoordinates } = state.game;
 
   return {
     cells,
     boardCoordinates,
-    blankCellCoordinates
-  }
-}
+    blankCellCoordinates,
+  };
+};
 
-export default connect(mapStateToProps, { setBlankCellCoordinates, reorderCells, checkForWin })(Cell);
+export default connect(mapStateToProps, {
+  setBlankCellCoordinates,
+  reorderCells,
+  checkForWin,
+  incrementMoves,
+})(Cell);

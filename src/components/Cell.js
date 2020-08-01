@@ -69,6 +69,7 @@ class Cell extends Component {
       e.clientY < blankCellCoordinates.y + boardCoordinates.y + CELL_SIZE * 2
     ) {
       this.props.reorderCells(index);
+      this.props.incrementMoves();
       this.props.checkForWin();
       this.setState({
         isCellClicked: false,

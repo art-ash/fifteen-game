@@ -13,21 +13,22 @@ class App extends Component {
   }
 
   render() {
-    const { isWin } = this.props;
+    const { isWin, moves } = this.props;
     let content;
 
     if (isWin) {
-      content = <h2>You Win!</h2>
+      content = <h2>You Win!</h2>;
     } else {
-      content = <Board />
+      content = <Board />;
     }
 
     return (
       <div className={styles.app}>
         <h1>Fifteen Game</h1>
+        <p>Moves: {moves}</p>
         {content}
         <button className={styles.button} onClick={this.handleButtonClick}>
-          {isWin ? 'Play again!' : 'Shuffle Cells'}
+          {isWin ? "Play again!" : "Shuffle Cells"}
         </button>
       </div>
     );

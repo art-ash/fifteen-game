@@ -4,8 +4,9 @@ import App from "../components/App";
 
 const mapStateToProps = state => {
   return {
-    isWin: state.game.isWin
-  }
-}
+    isWin: state.game.isWin,
+    moves: state.game.moves,
+  };
+};
 
 export default connect(mapStateToProps, { shuffleCells })(App);

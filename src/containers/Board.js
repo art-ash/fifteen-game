@@ -4,8 +4,10 @@ import Board from "../components/Board";
 
 const mapStateToProps = state => {
   return {
-    cells: state.game.cells
-  }
-}
+    cells: state.game.cells,
+  };
+};
 
-export default connect(mapStateToProps, { setBoardCoordinates, shuffleCells })(Board);
+export default connect(mapStateToProps, { setBoardCoordinates, shuffleCells })(
+  Board
+);

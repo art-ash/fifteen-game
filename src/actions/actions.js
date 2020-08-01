@@ -4,6 +4,7 @@ import {
   SET_BOARD_COORDINATES,
   REORDER_CELLS,
   CHECK_FOR_WIN,
+  INCREMENT_MOVES,
 } from "./actionTypes";
 
 export const shuffleCells = () => ({ type: SHUFFLE_CELLS });
@@ -24,3 +25,5 @@ export const reorderCells = cellIndex => ({
 });
 
 export const checkForWin = () => ({ type: CHECK_FOR_WIN });
+
+export const incrementMoves = () => ({ type: INCREMENT_MOVES });
