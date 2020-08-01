@@ -4,7 +4,7 @@ import styles from "./Cell.module.css";
 const CELL_SIZE = 100;
 const DRAGGING_STYLE = {
   zIndex: 10,
-  backgroundColor: "#000",
+  backgroundColor: "#111",
 };
 
 class Cell extends Component {
