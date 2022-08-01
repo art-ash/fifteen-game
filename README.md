@@ -1,5 +1,5 @@
 ## Fifteen Game with Drag'n'Drop
-[https://artashtree.github.io/fifteen-game/](https://artashtree.github.io/fifteen-game/)
+[https://art-ash.github.io/fifteen-game/](https://art-ash.github.io/fifteen-game/)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
