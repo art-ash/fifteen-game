@@ -1,23 +1,18 @@
-import React, { Component } from "react";
-import Cell from "../containers/Cell";
-import styles from "./Board.module.css";
+import React, { useEffect, useRef } from "react";
+import { connect } from "react-redux";
+import { setBoardCoordinates, shuffleCells } from "../actions/actions";
+import Cell from "./Cell";
 
-class Board extends Component {
-  constructor(props) {
-    super(props);
-    this.boardRef = React.createRef();
-    this.isCellDraggable = this.isCellDraggable.bind(this);
-  }
+const Board = ({ cells, setBoardCoordinates, shuffleCells }) => {
+  const boardRef = useRef(null);
 
-  componentDidMount() {
-    this.props.shuffleCells();
-    const boardRef = this.boardRef.current;
-    this.props.setBoardCoordinates(boardRef);
-  }
+  useEffect(() => {
+    shuffleCells();
+    setBoardCoordinates(boardRef.current);
+  }, []);
 
-  isCellDraggable(index) {
-    const { cells } = this.props;
-    let blankIndex = cells.findIndex(item => item === 0);
+  const isCellDraggable = (index) => {
+    let blankIndex = cells.findIndex((item) => item === 0);
     blankIndex = blankIndex + 5;
     const squareIndex = index + 5;
 
@@ -31,24 +26,26 @@ class Board extends Component {
     }
 
     return false;
-  }
+  };
 
-  render() {
-    const { cells } = this.props;
+  return (
+    <div className="board" ref={boardRef}>
+      {cells.map((value, index) => (
+        <Cell
+          key={`${index}_${value}`}
+          value={value}
+          index={index}
+          isCellDraggable={isCellDraggable(index)}
+        />
+      ))}
+    </div>
+  );
+};
 
-    return (
-      <div className={styles.board} ref={this.boardRef}>
-        {cells.map((value, index) => (
-          <Cell
-            key={`${index}_${value}`}
-            value={value}
-            index={index}
-            isCellDraggable={this.isCellDraggable(index)}
-          />
-        ))}
-      </div>
-    );
-  }
-}
+const mapStateToProps = (state) => ({
+  cells: state.game.cells,
+});
 
-export default Board;
+export default connect(mapStateToProps, { setBoardCoordinates, shuffleCells })(
+  Board
+);

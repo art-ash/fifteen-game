@@ -1,38 +1,28 @@
-import React, { Component } from "react";
-import Board from "../containers/Board";
-import styles from "./App.module.css";
+import React from "react";
+import { connect } from "react-redux";
+import { shuffleCells } from "../actions/actions";
+import Board from "./Board";
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.handleButtonClick = this.handleButtonClick.bind(this);
-  }
+const App = ({ isWin, moves, shuffleCells }) => {
+  const handleButtonClick = () => {
+    shuffleCells();
+  };
 
-  handleButtonClick() {
-    this.props.shuffleCells();
-  }
+  return (
+    <div className="app">
+      <h1>Fifteen Game</h1>
+      <p>Moves: {moves}</p>
+      {isWin ? <h2>You Won!</h2> : <Board />}
+      <button className="button" onClick={handleButtonClick}>
+        {isWin ? "Play again!" : "Shuffle Cells"}
+      </button>
+    </div>
+  );
+};
 
-  render() {
-    const { isWin, moves } = this.props;
-    let content;
+const mapStateToProps = (state) => ({
+  isWin: state.game.isWin,
+  moves: state.game.moves,
+});
 
-    if (isWin) {
-      content = <h2>You Win!</h2>;
-    } else {
-      content = <Board />;
-    }
-
-    return (
-      <div className={styles.app}>
-        <h1>Fifteen Game</h1>
-        <p>Moves: {moves}</p>
-        {content}
-        <button className={styles.button} onClick={this.handleButtonClick}>
-          {isWin ? "Play again!" : "Shuffle Cells"}
-        </button>
-      </div>
-    );
-  }
-}
-
-export default App;
+export default connect(mapStateToProps, { shuffleCells })(App);

@@ -1,5 +1,11 @@
-import React, { Component } from "react";
-import styles from "./Cell.module.css";
+import React, { useState, useEffect, useRef } from "react";
+import { connect } from "react-redux";
+import {
+  setBlankCellCoordinates,
+  reorderCells,
+  checkForWin,
+  incrementMoves,
+} from "../actions/actions";
 
 const CELL_SIZE = 100;
 const DRAGGING_STYLE = {
@@ -7,106 +13,101 @@ const DRAGGING_STYLE = {
   backgroundColor: "#111",
 };
 
-class Cell extends Component {
-  constructor(props) {
-    super(props);
-    this.squareRef = React.createRef();
-    this.state = {
-      draggingStyle: null,
-      isCellClicked: null,
-      isCellMoved: null,
-      isCellBlank: false,
-    };
+const Cell = (props) => {
+  const {
+    value,
+    index,
+    boardCoordinates,
+    blankCellCoordinates,
+    setBlankCellCoordinates,
+    reorderCells,
+    incrementMoves,
+    checkForWin,
+    isCellDraggable,
+  } = props;
 
-    this.handleMouseDown = this.handleMouseDown.bind(this);
-    this.handleMouseMove = this.handleMouseMove.bind(this);
-    this.handleMouseUp = this.handleMouseUp.bind(this);
-  }
+  const [draggingStyle, setDraggingStyle] = useState(null);
+  const [isCellClicked, setIsCellClicked] = useState(null);
+  const [isCellMoved, setIsCellMoved] = useState(null);
+  const [isCellBlank, setIsCellBlank] = useState(false);
 
-  componentDidMount() {
-    const { value } = this.props;
+  const squareRef = useRef(null);
+
+  useEffect(() => {
     const isCellBlank = value === 0;
     if (isCellBlank) {
-      const squareRef = this.squareRef.current;
-      this.props.setBlankCellCoordinates(squareRef);
-      this.setState({ isCellBlank });
+      setBlankCellCoordinates(squareRef.current);
+      setIsCellBlank(isCellBlank);
     }
-  }
+  }, []);
 
-  handleMouseDown(e) {
-    const { boardCoordinates } = this.props;
-
-    this.setState({
-      isCellClicked: true,
-      draggingStyle: {
-        top: e.pageY - boardCoordinates.y - CELL_SIZE / 2,
-        left: e.pageX - boardCoordinates.x - CELL_SIZE / 2,
-        ...DRAGGING_STYLE,
-      },
+  const handleMouseDown = (e) => {
+    setIsCellClicked(true);
+    setDraggingStyle({
+      top: e.pageY - boardCoordinates.y - CELL_SIZE / 2,
+      left: e.pageX - boardCoordinates.x - CELL_SIZE / 2,
+      ...DRAGGING_STYLE,
     });
-  }
+  };
 
-  handleMouseMove(e) {
-    const { boardCoordinates } = this.props;
-
-    this.setState({
-      isCellMoved: true,
-      draggingStyle: {
-        top: e.pageY - boardCoordinates.y - CELL_SIZE / 2,
-        left: e.pageX - boardCoordinates.x - CELL_SIZE / 2,
-        ...DRAGGING_STYLE,
-      },
+  const handleMouseMove = (e) => {
+    setIsCellMoved(true);
+    setDraggingStyle({
+      top: e.pageY - boardCoordinates.y - CELL_SIZE / 2,
+      left: e.pageX - boardCoordinates.x - CELL_SIZE / 2,
+      ...DRAGGING_STYLE,
     });
-  }
+  };
 
-  handleMouseUp(e) {
-    const { blankCellCoordinates, boardCoordinates, index } = this.props;
-
+  const handleMouseUp = (e) => {
     if (
       e.clientX > blankCellCoordinates.x + boardCoordinates.x &&
       e.clientX < blankCellCoordinates.x + boardCoordinates.x + CELL_SIZE * 2 &&
       e.clientY > blankCellCoordinates.y + boardCoordinates.y &&
       e.clientY < blankCellCoordinates.y + boardCoordinates.y + CELL_SIZE * 2
     ) {
-      this.props.reorderCells(index);
-      this.props.incrementMoves();
-      this.props.checkForWin();
-      this.setState({
-        isCellClicked: false,
-        isCellMoved: false,
-        draggingStyle: null,
-      });
+      reorderCells(index);
+      incrementMoves();
+      checkForWin();
+      setIsCellClicked(false);
+      setIsCellMoved(false);
+      setDraggingStyle(null);
     }
+  };
+
+  if (isCellBlank) {
+    return <div className="cell" />;
   }
 
-  render() {
-    const { value, isCellDraggable } = this.props;
-    const {
-      draggingStyle,
-      isCellClicked,
-      isCellMoved,
-      isCellBlank,
-    } = this.state;
+  return (
+    <div
+      ref={squareRef}
+      style={
+        isCellDraggable ? { ...draggingStyle, cursor: "move" } : draggingStyle
+      }
+      className="cell"
+      onMouseDown={isCellDraggable ? handleMouseDown : null}
+      onMouseMove={isCellDraggable && isCellClicked ? handleMouseMove : null}
+      onMouseUp={isCellDraggable && isCellMoved ? handleMouseUp : null}
+    >
+      {value}
+    </div>
+  );
+};
 
-    if (isCellBlank) {
-      return <div className={styles.cell} />;
-    }
+const mapStateToProps = (state) => {
+  const { cells, boardCoordinates, blankCellCoordinates } = state.game;
 
-    return (
-      <div
-        style={draggingStyle}
-        className={styles.cell}
-        onMouseDown={isCellDraggable ? this.handleMouseDown : null}
-        onMouseMove={
-          isCellDraggable && isCellClicked ? this.handleMouseMove : null
-        }
-        onMouseUp={isCellDraggable && isCellMoved ? this.handleMouseUp : null}
-        ref={this.squareRef}
-      >
-        {value}
-      </div>
-    );
-  }
-}
+  return {
+    cells,
+    boardCoordinates,
+    blankCellCoordinates,
+  };
+};
 
-export default Cell;
+export default connect(mapStateToProps, {
+  setBlankCellCoordinates,
+  reorderCells,
+  checkForWin,
+  incrementMoves,
+})(Cell);

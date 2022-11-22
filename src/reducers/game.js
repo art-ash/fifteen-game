@@ -80,8 +80,8 @@ export default function (state = initialState, action) {
       const { cells } = state;
 
       if (
-        JSON.stringify(cells) == JSON.stringify(winArray1) ||
-        JSON.stringify(cells) == JSON.stringify(winArray2)
+        JSON.stringify(cells) === JSON.stringify(winArray1) ||
+        JSON.stringify(cells) === JSON.stringify(winArray2)
       ) {
         return {
           ...state,
