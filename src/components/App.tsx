@@ -2,8 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 import { shuffleCells } from "../actions/actions";
 import Board from "./Board";
+import { IState } from "../interfaces";
 
-const App = ({ isWin, moves, shuffleCells }) => {
+const App = (props: any) => {
+  const { isWin, moves, shuffleCells } = props;
+  
   const handleButtonClick = () => {
     shuffleCells();
   };
@@ -20,9 +23,9 @@ const App = ({ isWin, moves, shuffleCells }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  isWin: state.game.isWin,
-  moves: state.game.moves,
+const mapStateToProps = (state: IState) => ({
+  isWin: state.isWin,
+  moves: state.moves,
 });
 
 export default connect(mapStateToProps, { shuffleCells })(App);
