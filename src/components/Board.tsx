@@ -2,8 +2,11 @@ import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { setBoardCoordinates, shuffleCells } from "../actions/actions";
 import Cell from "./Cell";
+import { IState } from "../interfaces";
 
-const Board = ({ cells, setBoardCoordinates, shuffleCells }) => {
+const Board = (props: any) => {
+  const { cells, setBoardCoordinates, shuffleCells } = props;
+
   const boardRef = useRef(null);
 
   useEffect(() => {
@@ -11,8 +14,8 @@ const Board = ({ cells, setBoardCoordinates, shuffleCells }) => {
     setBoardCoordinates(boardRef.current);
   }, []);
 
-  const isCellDraggable = (index) => {
-    let blankIndex = cells.findIndex((item) => item === 0);
+  const canDrag = (index: number): boolean => {
+    let blankIndex = cells.findIndex((item: number) => item === 0);
     blankIndex = blankIndex + 5;
     const squareIndex = index + 5;
 
@@ -30,20 +33,20 @@ const Board = ({ cells, setBoardCoordinates, shuffleCells }) => {
 
   return (
     <div className="board" ref={boardRef}>
-      {cells.map((value, index) => (
+      {cells.map((value: number, index: number) => (
         <Cell
           key={`${index}_${value}`}
           value={value}
           index={index}
-          isCellDraggable={isCellDraggable(index)}
+          canDrag={canDrag(index)}
         />
       ))}
     </div>
   );
 };
 
-const mapStateToProps = (state) => ({
-  cells: state.game.cells,
+const mapStateToProps = (state: IState) => ({
+  cells: state.cells,
 });
 
 export default connect(mapStateToProps, { setBoardCoordinates, shuffleCells })(

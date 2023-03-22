@@ -6,8 +6,12 @@ import {
   CHECK_FOR_WIN,
   INCREMENT_MOVES,
 } from "../actions/actionTypes";
+import { IState, IAction } from "../interfaces";
 
-const initialState = {
+const winCase1 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+const winCase2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0];
+
+const initialState: IState = {
   cells: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0],
   boardCoordinates: {
     x: null,
@@ -17,22 +21,23 @@ const initialState = {
     x: null,
     y: null,
   },
-  isWin: null,
+  isWin: false,
   moves: 0,
 };
 
-export default function (state = initialState, action) {
+
+export default function (state = initialState, action: IAction) {
   switch (action.type) {
     case SHUFFLE_CELLS: {
       const { cells } = state;
-      cells.sort(() => Math.random() - 0.5);
       const newCells = cells.slice();
-      
+      newCells.sort(() => Math.random() - 0.5);
+
       return {
         ...state,
         cells: newCells,
         isWin: false,
-        moves: 0
+        moves: 0,
       };
     }
 
@@ -63,10 +68,10 @@ export default function (state = initialState, action) {
     case REORDER_CELLS: {
       const { cellIndex } = action.payload;
       const { cells } = state;
-      let blankIndex = cells.findIndex(item => item === 0);
-      const removed = cells.splice(cellIndex, 1, 0);
-      cells.splice(blankIndex, 1, removed[0]);
       const newCells = cells.slice();
+      const blankIndex = newCells.findIndex((item) => item === 0);
+      const removed = newCells.splice(cellIndex, 1, 0);
+      newCells.splice(blankIndex, 1, removed[0]);
 
       return {
         ...state,
@@ -75,32 +80,23 @@ export default function (state = initialState, action) {
     }
 
     case CHECK_FOR_WIN: {
-      const winArray1 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-      const winArray2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0];
       const { cells } = state;
-
-      if (
-        JSON.stringify(cells) === JSON.stringify(winArray1) ||
-        JSON.stringify(cells) === JSON.stringify(winArray2)
-      ) {
-        return {
-          ...state,
-          isWin: true,
-        };
-      }
+      const cellsString = JSON.stringify(cells);
+      const win1Sting = JSON.stringify(winCase1);
+      const win2Sting = JSON.stringify(winCase2);
 
       return {
         ...state,
+        isWin: cellsString === win1Sting || cellsString === win2Sting,
       };
     }
 
     case INCREMENT_MOVES: {
-      let { moves } = state;
-      moves++
-      
+      const { moves } = state;
+
       return {
         ...state,
-        moves
+        moves: moves + 1,
       };
     }
 
