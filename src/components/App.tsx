@@ -1,12 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
-import { shuffleCells } from "../actions/actions";
+import { shuffleCells } from "../redux/actions";
 import Board from "./Board";
-import { IState } from "../interfaces";
+import { IState, AppProps } from "../interfaces";
 
-const App = (props: any) => {
+const App: React.FC<AppProps> = (props) => {
   const { isWin, moves, shuffleCells } = props;
-  
+
   const handleButtonClick = () => {
     shuffleCells();
   };

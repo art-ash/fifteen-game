@@ -5,8 +5,8 @@ import {
   reorderCells,
   checkForWin,
   incrementMoves,
-} from "../actions/actions";
-import { IState, IDragStyle } from "../interfaces";
+} from "../redux/actions";
+import { IState } from "../interfaces";
 
 const CELLSIZE = 80;
 const DRAGSTYLE = {
@@ -27,7 +27,7 @@ const Cell = (props: any) => {
     canDrag,
   } = props;
 
-  const [draggingStyle, setDraggingStyle] = useState<IDragStyle | object>({});
+  const [draggingStyle, setDraggingStyle] = useState<React.CSSProperties>({});
   const [isCellClicked, setIsCellClicked] = useState<Boolean>(false);
   const [isCellMoved, setIsCellMoved] = useState<Boolean>(false);
   const [isCellBlank, setIsCellBlank] = useState<Boolean>(false);
@@ -90,9 +90,7 @@ const Cell = (props: any) => {
   return (
     <div
       ref={squareRef}
-      style={
-        canDrag ? { ...draggingStyle, cursor: "move" } : draggingStyle
-      }
+      style={canDrag ? { ...draggingStyle, cursor: "move" } : draggingStyle}
       className="cell"
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}

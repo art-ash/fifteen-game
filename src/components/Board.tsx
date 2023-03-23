@@ -1,34 +1,34 @@
 import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
-import { setBoardCoordinates, shuffleCells } from "../actions/actions";
+import { setBoardCoordinates, shuffleCells } from "../redux/actions";
 import Cell from "./Cell";
-import { IState } from "../interfaces";
+import { IState, BoardProps } from "../interfaces";
 
-const Board = (props: any) => {
-  const { cells, setBoardCoordinates, shuffleCells } = props;
-
+const Board: React.FC<BoardProps> = ({
+  cells,
+  setBoardCoordinates,
+  shuffleCells,
+}) => {
   const boardRef = useRef(null);
 
   useEffect(() => {
-    shuffleCells();
-    setBoardCoordinates(boardRef.current);
-  }, []);
+    if (boardRef.current) {
+      shuffleCells();
+      setBoardCoordinates(boardRef.current);
+    }
+  }, [boardRef.current]);
 
-  const canDrag = (index: number): boolean => {
+  const canDrag = (index: number) => {
     let blankIndex = cells.findIndex((item: number) => item === 0);
     blankIndex = blankIndex + 5;
     const squareIndex = index + 5;
 
-    if (
+    return (
       squareIndex === blankIndex + 1 ||
       squareIndex === blankIndex - 1 ||
       squareIndex === blankIndex + 4 ||
       squareIndex === blankIndex - 4
-    ) {
-      return true;
-    }
-
-    return false;
+    );
   };
 
   return (

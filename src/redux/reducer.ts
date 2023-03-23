@@ -1,11 +1,4 @@
-import {
-  SHUFFLE_CELLS,
-  SET_BOARD_COORDINATES,
-  SET_BLANK_CELL_COORDINATES,
-  REORDER_CELLS,
-  CHECK_FOR_WIN,
-  INCREMENT_MOVES,
-} from "../actions/actionTypes";
+import * as types from "./types";
 import { IState, IAction } from "../interfaces";
 
 const winCase1 = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
@@ -25,10 +18,9 @@ const initialState: IState = {
   moves: 0,
 };
 
-
 export default function (state = initialState, action: IAction) {
   switch (action.type) {
-    case SHUFFLE_CELLS: {
+    case types.SHUFFLE_CELLS: {
       const { cells } = state;
       const newCells = cells.slice();
       newCells.sort(() => Math.random() - 0.5);
@@ -41,8 +33,8 @@ export default function (state = initialState, action: IAction) {
       };
     }
 
-    case SET_BOARD_COORDINATES: {
-      const { node } = action.payload;
+    case types.SET_BOARD_COORDINATES: {
+      const node = action.payload;
 
       return {
         ...state,
@@ -53,8 +45,8 @@ export default function (state = initialState, action: IAction) {
       };
     }
 
-    case SET_BLANK_CELL_COORDINATES: {
-      const { node } = action.payload;
+    case types.SET_BLANK_CELL_COORDINATES: {
+      const node = action.payload;
 
       return {
         ...state,
@@ -65,8 +57,8 @@ export default function (state = initialState, action: IAction) {
       };
     }
 
-    case REORDER_CELLS: {
-      const { cellIndex } = action.payload;
+    case types.REORDER_CELLS: {
+      const cellIndex = action.payload;
       const { cells } = state;
       const newCells = cells.slice();
       const blankIndex = newCells.findIndex((item) => item === 0);
@@ -79,7 +71,7 @@ export default function (state = initialState, action: IAction) {
       };
     }
 
-    case CHECK_FOR_WIN: {
+    case types.CHECK_FOR_WIN: {
       const { cells } = state;
       const cellsString = JSON.stringify(cells);
       const win1Sting = JSON.stringify(winCase1);
@@ -91,7 +83,7 @@ export default function (state = initialState, action: IAction) {
       };
     }
 
-    case INCREMENT_MOVES: {
+    case types.INCREMENT_MOVES: {
       const { moves } = state;
 
       return {
