@@ -9,13 +9,13 @@ const win2Sting = JSON.stringify(winCase2);
 
 const initialState: IState = {
   cells: winCase1,
-  boardCoordinates: {
-    x: null,
-    y: null,
+  board: {
+    x: 0,
+    y: 0,
   },
-  blankCellCoordinates: {
-    x: null,
-    y: null,
+  blankCell: {
+    x: 0,
+    y: 0,
   },
   isWin: false,
   moves: 0,
@@ -41,7 +41,7 @@ export default function (state = initialState, action: IAction) {
 
       return {
         ...state,
-        boardCoordinates: {
+        board: {
           x: node.offsetLeft,
           y: node.offsetTop,
         },
@@ -53,7 +53,7 @@ export default function (state = initialState, action: IAction) {
 
       return {
         ...state,
-        blankCellCoordinates: {
+        blankCell: {
           x: node.offsetLeft,
           y: node.offsetTop,
         },

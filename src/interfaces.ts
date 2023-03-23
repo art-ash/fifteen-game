@@ -14,24 +14,22 @@ export interface BoardProps {
 export interface CellProps {
   value: number;
   index: number;
-  boardCoordinates: ICoordinates;
-  blankCellCoordinates: ICoordinates;
+  board: ICoordinates;
+  blankCell: ICoordinates;
   canDrag: boolean;
   setBlankCellCoordinates: (node: HTMLElement) => Action;
   reorderCells: (index: number) => Action;
-  incrementMoves: () => Action;
-  checkForWin: () => Action;
 }
 
 export interface ICoordinates {
-  x: number | null;
-  y: number | null;
+  x: number;
+  y: number;
 }
 
 export interface IState {
   cells: number[];
-  boardCoordinates: ICoordinates;
-  blankCellCoordinates: ICoordinates;
+  board: ICoordinates;
+  blankCell: ICoordinates;
   isWin: boolean;
   moves: number;
 }

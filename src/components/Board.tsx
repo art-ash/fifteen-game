@@ -6,8 +6,8 @@ import { IState, BoardProps } from "../interfaces";
 
 const Board: React.FC<BoardProps> = ({
   cells,
-  setBoardCoordinates,
   shuffleCells,
+  setBoardCoordinates,
 }) => {
   const boardRef = useRef(null);
 

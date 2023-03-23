@@ -1,112 +1,82 @@
 import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { setBlankCellCoordinates, reorderCells } from "../redux/actions";
-import { IState } from "../interfaces";
+import { IState, CellProps } from "../interfaces";
 
 const CELLSIZE = 80;
-const DRAGSTYLE = {
-  zIndex: 10,
-  backgroundColor: "#111",
-};
 
-const Cell = (props: any) => {
+const Cell: React.FC<CellProps> = (props) => {
   const {
     value,
     index,
-    boardCoordinates,
-    blankCellCoordinates,
+    canDrag,
+    board,
+    blankCell,
     setBlankCellCoordinates,
     reorderCells,
-    canDrag,
   } = props;
 
   const [draggingStyle, setDraggingStyle] = useState<React.CSSProperties>({});
-  const [isCellClicked, setIsCellClicked] = useState<Boolean>(false);
-  const [isCellMoved, setIsCellMoved] = useState<Boolean>(false);
-  const [isCellBlank, setIsCellBlank] = useState<Boolean>(false);
+  const [touched, setTouched] = useState<Boolean>(false);
+  const [moved, setMoved] = useState<Boolean>(false);
+  const [blank, setBlank] = useState<Boolean>(false);
 
-  const squareRef = useRef(null);
+  const cellRef = useRef(null);
 
   useEffect(() => {
-    const isCellBlank = value === 0;
-    if (isCellBlank) {
-      setBlankCellCoordinates(squareRef.current);
-      setIsCellBlank(isCellBlank);
+    if (cellRef.current && value === 0) {
+      setBlank(true);
+      setBlankCellCoordinates(cellRef.current);
     }
-  }, []);
-
-  const handleStart = () => {
-    if (canDrag) {
-      setIsCellClicked(true);
-    }
-  };
+  }, [cellRef.current]);
 
   const move = (x: number, y: number) => {
-    if (isCellClicked) {
-      setIsCellMoved(true);
+    if (touched) {
+      setMoved(true);
       setDraggingStyle({
-        top: y - boardCoordinates.y - CELLSIZE / 2,
-        left: x - boardCoordinates.x - CELLSIZE / 2,
-        ...DRAGSTYLE,
+        top: y - board.y - CELLSIZE / 2,
+        left: x - board.x - CELLSIZE / 2,
+        zIndex: 10,
+        backgroundColor: "#111",
       });
     }
   };
 
   const end = (x: number, y: number) => {
-    if (isCellMoved) {
+    if (moved) {
       if (
-        x > blankCellCoordinates.x + boardCoordinates.x &&
-        x < blankCellCoordinates.x + boardCoordinates.x + CELLSIZE * 2 &&
-        y > blankCellCoordinates.y + boardCoordinates.y &&
-        y < blankCellCoordinates.y + boardCoordinates.y + CELLSIZE * 2
+        x > blankCell.x + board.x &&
+        x < blankCell.x + board.x + CELLSIZE * 2 &&
+        y > blankCell.y + board.y &&
+        y < blankCell.y + board.y + CELLSIZE * 2
       ) {
         reorderCells(index);
-        setIsCellClicked(false);
-        setIsCellMoved(false);
+        setTouched(false);
+        setMoved(false);
         setDraggingStyle({});
       }
     }
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (isCellClicked) {
-      move(e.pageX, e.pageY);
-    }
-  };
-
-  const handleMouseUp = (e: React.MouseEvent) => {
-    if (isCellMoved) {
-      end(e.pageX, e.pageY);
-    }
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (isCellClicked) {
-      move(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
-    }
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (isCellMoved) {
-      end(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
-    }
-  };
-
-  if (isCellBlank) {
+  if (blank) {
     return <div className="cell" />;
   }
 
   return (
     <div
-      ref={squareRef}
-      style={canDrag ? { ...draggingStyle, cursor: "move" } : draggingStyle}
+      ref={cellRef}
+      style={canDrag ? { ...draggingStyle, cursor: "move" } : {}}
       className="cell"
-      onMouseDown={handleStart}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onTouchStart={handleStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      onMouseDown={() => canDrag && setTouched(true)}
+      onMouseMove={(e) => touched && move(e.pageX, e.pageY)}
+      onMouseUp={(e) => moved && end(e.pageX, e.pageY)}
+      onTouchStart={() => canDrag && setTouched(true)}
+      onTouchMove={(e) =>
+        touched && move(e.changedTouches[0].pageX, e.changedTouches[0].pageY)
+      }
+      onTouchEnd={(e) =>
+        moved && end(e.changedTouches[0].pageX, e.changedTouches[0].pageY)
+      }
     >
       {value}
     </div>
@@ -114,12 +84,12 @@ const Cell = (props: any) => {
 };
 
 const mapStateToProps = (state: IState) => {
-  const { cells, boardCoordinates, blankCellCoordinates } = state;
+  const { cells, board, blankCell } = state;
 
   return {
     cells,
-    boardCoordinates,
-    blankCellCoordinates,
+    board,
+    blankCell,
   };
 };
 
