@@ -19,8 +19,7 @@ const Board: React.FC<BoardProps> = ({
   }, [boardRef.current]);
 
   const canDrag = (index: number) => {
-    let blankIndex = cells.findIndex((item: number) => item === 0);
-    blankIndex = blankIndex + 5;
+    const blankIndex = cells.findIndex((item) => item === 0) + 5;
     const squareIndex = index + 5;
 
     return (
@@ -33,7 +32,7 @@ const Board: React.FC<BoardProps> = ({
 
   return (
     <div className="board" ref={boardRef}>
-      {cells.map((value: number, index: number) => (
+      {cells.map((value, index) => (
         <Cell
           key={`${index}_${value}`}
           value={value}

@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
-import {
-  setBlankCellCoordinates,
-  reorderCells,
-  checkForWin,
-  incrementMoves,
-} from "../redux/actions";
+import { setBlankCellCoordinates, reorderCells } from "../redux/actions";
 import { IState } from "../interfaces";
 
 const CELLSIZE = 80;
@@ -22,8 +17,6 @@ const Cell = (props: any) => {
     blankCellCoordinates,
     setBlankCellCoordinates,
     reorderCells,
-    incrementMoves,
-    checkForWin,
     canDrag,
   } = props;
 
@@ -42,19 +35,14 @@ const Cell = (props: any) => {
     }
   }, []);
 
-  const start = (x: number, y: number) => {
+  const handleStart = () => {
     if (canDrag) {
       setIsCellClicked(true);
-      setDraggingStyle({
-        top: y - boardCoordinates.y - CELLSIZE / 2,
-        left: x - boardCoordinates.x - CELLSIZE / 2,
-        ...DRAGSTYLE,
-      });
     }
   };
 
   const move = (x: number, y: number) => {
-    if (canDrag && isCellClicked) {
+    if (isCellClicked) {
       setIsCellMoved(true);
       setDraggingStyle({
         top: y - boardCoordinates.y - CELLSIZE / 2,
@@ -65,7 +53,7 @@ const Cell = (props: any) => {
   };
 
   const end = (x: number, y: number) => {
-    if (canDrag && isCellMoved) {
+    if (isCellMoved) {
       if (
         x > blankCellCoordinates.x + boardCoordinates.x &&
         x < blankCellCoordinates.x + boardCoordinates.x + CELLSIZE * 2 &&
@@ -73,8 +61,6 @@ const Cell = (props: any) => {
         y < blankCellCoordinates.y + boardCoordinates.y + CELLSIZE * 2
       ) {
         reorderCells(index);
-        incrementMoves();
-        checkForWin();
         setIsCellClicked(false);
         setIsCellMoved(false);
         setDraggingStyle({});
@@ -82,38 +68,26 @@ const Cell = (props: any) => {
     }
   };
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (canDrag) {
-      start(e.pageX, e.pageY);
-    }
-  };
-
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (canDrag && isCellClicked) {
+    if (isCellClicked) {
       move(e.pageX, e.pageY);
     }
   };
 
   const handleMouseUp = (e: React.MouseEvent) => {
-    if (canDrag && isCellMoved) {
+    if (isCellMoved) {
       end(e.pageX, e.pageY);
     }
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (canDrag) {
-      start(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
-    }
-  };
-
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (canDrag && isCellClicked) {
+    if (isCellClicked) {
       move(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
     }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (canDrag && isCellMoved) {
+    if (isCellMoved) {
       end(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
     }
   };
@@ -127,10 +101,10 @@ const Cell = (props: any) => {
       ref={squareRef}
       style={canDrag ? { ...draggingStyle, cursor: "move" } : draggingStyle}
       className="cell"
-      onMouseDown={handleMouseDown}
+      onMouseDown={handleStart}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
-      onTouchStart={handleTouchStart}
+      onTouchStart={handleStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
@@ -152,6 +126,4 @@ const mapStateToProps = (state: IState) => {
 export default connect(mapStateToProps, {
   setBlankCellCoordinates,
   reorderCells,
-  checkForWin,
-  incrementMoves,
 })(Cell);

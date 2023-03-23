@@ -7,16 +7,12 @@ import { IState, AppProps } from "../interfaces";
 const App: React.FC<AppProps> = (props) => {
   const { isWin, moves, shuffleCells } = props;
 
-  const handleButtonClick = () => {
-    shuffleCells();
-  };
-
   return (
     <div className="app">
       <h1>Fifteen Game</h1>
       <p>Moves: {moves}</p>
       {isWin ? <h2>You Won!</h2> : <Board />}
-      <button className="button" onClick={handleButtonClick}>
+      <button className="button" onClick={() => shuffleCells()}>
         {isWin ? "Play again!" : "Shuffle Cells"}
       </button>
     </div>

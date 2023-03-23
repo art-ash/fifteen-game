@@ -18,7 +18,7 @@ export interface CellProps {
   blankCellCoordinates: ICoordinates;
   canDrag: boolean;
   setBlankCellCoordinates: (node: HTMLElement) => Action;
-  reorderCells: (cellIndex: number) => Action;
+  reorderCells: (index: number) => Action;
   incrementMoves: () => Action;
   checkForWin: () => Action;
 }
