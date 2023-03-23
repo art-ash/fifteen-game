@@ -42,36 +42,35 @@ const Cell = (props: any) => {
     }
   }, []);
 
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const start = (x: number, y: number) => {
     if (canDrag) {
       setIsCellClicked(true);
       setDraggingStyle({
-        top: e.pageY - boardCoordinates.y - CELLSIZE / 2,
-        left: e.pageX - boardCoordinates.x - CELLSIZE / 2,
+        top: y - boardCoordinates.y - CELLSIZE / 2,
+        left: x - boardCoordinates.x - CELLSIZE / 2,
         ...DRAGSTYLE,
       });
     }
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const move = (x: number, y: number) => {
     if (canDrag && isCellClicked) {
       setIsCellMoved(true);
       setDraggingStyle({
-        top: e.pageY - boardCoordinates.y - CELLSIZE / 2,
-        left: e.pageX - boardCoordinates.x - CELLSIZE / 2,
+        top: y - boardCoordinates.y - CELLSIZE / 2,
+        left: x - boardCoordinates.x - CELLSIZE / 2,
         ...DRAGSTYLE,
       });
     }
   };
 
-  const handleMouseUp = (e: React.MouseEvent) => {
+  const end = (x: number, y: number) => {
     if (canDrag && isCellMoved) {
       if (
-        e.clientX > blankCellCoordinates.x + boardCoordinates.x &&
-        e.clientX <
-          blankCellCoordinates.x + boardCoordinates.x + CELLSIZE * 2 &&
-        e.clientY > blankCellCoordinates.y + boardCoordinates.y &&
-        e.clientY < blankCellCoordinates.y + boardCoordinates.y + CELLSIZE * 2
+        x > blankCellCoordinates.x + boardCoordinates.x &&
+        x < blankCellCoordinates.x + boardCoordinates.x + CELLSIZE * 2 &&
+        y > blankCellCoordinates.y + boardCoordinates.y &&
+        y < blankCellCoordinates.y + boardCoordinates.y + CELLSIZE * 2
       ) {
         reorderCells(index);
         incrementMoves();
@@ -80,6 +79,42 @@ const Cell = (props: any) => {
         setIsCellMoved(false);
         setDraggingStyle({});
       }
+    }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (canDrag) {
+      start(e.pageX, e.pageY);
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (canDrag && isCellClicked) {
+      move(e.pageX, e.pageY);
+    }
+  };
+
+  const handleMouseUp = (e: React.MouseEvent) => {
+    if (canDrag && isCellMoved) {
+      end(e.pageX, e.pageY);
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (canDrag) {
+      start(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (canDrag && isCellClicked) {
+      move(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (canDrag && isCellMoved) {
+      end(e.changedTouches[0].pageX, e.changedTouches[0].pageY);
     }
   };
 
@@ -95,6 +130,9 @@ const Cell = (props: any) => {
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       {value}
     </div>
